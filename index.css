@@ -7,14 +7,25 @@
   }
 
   html,
-  body {
+  body,
+  #root {
     margin: 0;
     padding: 0;
+    width: 100vw;
+    height: 100dvh;
+    max-width: 100vw;
+    max-height: 100dvh;
+    overflow: hidden;
     background-color: #f6f3ea;
     color: #2d2a26;
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     overscroll-behavior: none;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   h1,
@@ -23,6 +34,29 @@
   .font-display {
     font-family: var(--font-display);
   }
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.px-safe {
+  padding-left: max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
+}
+
+.touch-pan-y-scroll {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+.touch-pan-x-scroll {
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 }
 
 @keyframes pop-in {
@@ -80,6 +114,7 @@
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

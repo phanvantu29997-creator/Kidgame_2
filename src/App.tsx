@@ -237,9 +237,7 @@ export function App() {
         Math.max(0, Math.floor(relY / (BOARD_SIZE / currentLevel.rows))),
       );
 
-      return (
-        basePieces.find((p) => p.col === col && p.row === row) || null
-      );
+      return basePieces.find((p) => p.col === col && p.row === row) || null;
     },
     [basePieces, currentLevel.cols, currentLevel.rows],
   );
@@ -349,7 +347,7 @@ export function App() {
             playWrongPieceVoice(soundEnabled);
             setWiggleSlotId(hoveredSlot.id);
             setFeedbackText(
-              'Chưa đúng rồi bé ơi! Bé thử đặt sang vị trí khác trên tranh nhé.',
+              'Chưa đúng rồi bé ơi! Bé thử đặt sang vị trí khác nhé.',
             );
           }
         }
@@ -380,7 +378,7 @@ export function App() {
     if (isComplete || placedIds.includes(slotPiece.id)) return;
     if (!selectedPieceId) {
       setFeedbackText(
-        'Bé hãy chọn hoặc kéo một mảnh ghép ở bên cạnh vào ô này nhé!',
+        'Bé hãy chọn hoặc kéo một mảnh ghép vào ô này nhé!',
       );
       return;
     }
@@ -391,7 +389,7 @@ export function App() {
       playWrongPieceVoice(soundEnabled);
       setWiggleSlotId(slotPiece.id);
       setFeedbackText(
-        'Chưa đúng rồi bé ơi! Bé thử chạm vào ô khác xem sao nhé.',
+        'Chưa đúng rồi bé ơi! Bé thử chạm vào ô khác nhé.',
       );
     }
   };
@@ -399,8 +397,17 @@ export function App() {
   const hasPrevLevel = currentLevelIdx > 0;
   const hasNextLevel = currentLevelIdx < PUZZLE_LEVELS.length - 1;
 
+  const mobileTrayCols =
+    currentLevel.pieceCount === 2
+      ? 'grid-cols-2'
+      : currentLevel.pieceCount === 3
+        ? 'grid-cols-3'
+        : currentLevel.pieceCount === 4
+          ? 'grid-cols-2'
+          : 'grid-cols-3';
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#F6F3EA] text-[#2D2A26]">
+    <div className="w-[100vw] h-[100dvh] flex flex-col overflow-hidden bg-[#F6F3EA] text-[#2D2A26] touch-none-drag">
       <img
         src={currentLevel.imageUrl}
         alt=""
@@ -410,19 +417,19 @@ export function App() {
         className="sr-only"
       />
 
-      {/* 3-Zone Top Header */}
-      <header className="bg-white/95 backdrop-blur-sm border-b border-[#E5DEC9] sticky top-0 z-30">
-        <div className="max-w-[1180px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4 sm:gap-8">
+      {/* Safe-Area Top Header (notch / Dynamic Island compatible) */}
+      <header className="pt-safe bg-white/95 backdrop-blur-sm border-b border-[#E5DEC9] shrink-0 z-30">
+        <div className="max-w-[1180px] mx-auto px-safe py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-8">
           {/* Zone 1: Brand Title */}
           <button
             type="button"
             onClick={() => setViewMode('PLAY')}
-            className="flex items-center gap-2.5 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
+            className="flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
           >
-            <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-[#EA580C] text-white shadow-sm">
-              <Puzzle className="w-5 h-5" />
+            <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#EA580C] text-white shadow-sm">
+              <Puzzle className="w-4 h-4 sm:w-5 sm:h-5" />
             </span>
-            <span className="font-display text-xl font-bold tracking-tight text-[#2D2A26]">
+            <span className="font-display text-base sm:text-xl font-bold tracking-tight text-[#2D2A26]">
               Bé Ghép Tranh
             </span>
           </button>
@@ -430,12 +437,12 @@ export function App() {
           {/* Zone 2: Concise Navigation Controls */}
           <nav
             aria-label="Điều hướng trò chơi"
-            className="flex items-center gap-5 sm:gap-7 text-sm font-semibold text-[#5C554C]"
+            className="flex items-center gap-3 sm:gap-7 text-xs sm:text-sm font-semibold text-[#5C554C]"
           >
             <button
               type="button"
               onClick={() => setViewMode('PLAY')}
-              className={`whitespace-nowrap shrink-0 cursor-pointer transition-colors py-1 border-b-2 ${
+              className={`min-h-[44px] px-1.5 flex items-center whitespace-nowrap shrink-0 cursor-pointer transition-colors border-b-2 ${
                 viewMode === 'PLAY'
                   ? 'text-[#EA580C] border-[#EA580C]'
                   : 'border-transparent hover:text-[#2D2A26]'
@@ -446,14 +453,14 @@ export function App() {
             <button
               type="button"
               onClick={() => setViewMode('GALLERY')}
-              className={`inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer transition-colors py-1 border-b-2 ${
+              className={`min-h-[44px] px-1.5 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer transition-colors border-b-2 ${
                 viewMode === 'GALLERY'
                   ? 'text-[#EA580C] border-[#EA580C]'
                   : 'border-transparent hover:text-[#2D2A26]'
               }`}
             >
               <Grid className="w-4 h-4" />
-              <span>Tất cả 10 màn</span>
+              <span>10 màn</span>
             </button>
           </nav>
 
@@ -462,7 +469,7 @@ export function App() {
             <button
               type="button"
               onClick={() => resetLevel(currentLevelIdx)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] active:scale-[0.98] text-white text-sm font-semibold transition-all shadow-sm whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
+              className="inline-flex items-center justify-center gap-1.5 min-h-[44px] px-3 sm:px-4 py-2 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-sm whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Chơi lại</span>
@@ -472,20 +479,20 @@ export function App() {
       </header>
 
       {viewMode === 'GALLERY' ? (
-        /* All 10 Levels Selection Gallery */
-        <main className="flex-1 w-full max-w-[1180px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+        /* All 10 Levels Selection Gallery (scroll-enabled safely within 100dvh) */
+        <main className="flex-1 min-h-0 w-full max-w-[1180px] mx-auto px-safe pb-safe py-4 sm:py-6 overflow-y-auto touch-pan-y-scroll">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-4 sm:mb-6">
             <div>
-              <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#2D2A26] tracking-tight text-balance">
+              <h1 className="font-display text-xl sm:text-3xl font-bold text-[#2D2A26] tracking-tight text-balance">
                 Chọn màn chơi cho bé
               </h1>
-              <p className="mt-1 text-sm text-[#665F55] tabular-nums">
+              <p className="mt-0.5 text-xs sm:text-sm text-[#665F55] tabular-nums">
                 10 bức tranh con vật đáng yêu · Đã hoàn thành {completedLevels.length}/10 màn
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 pb-6">
             {PUZZLE_LEVELS.map((lvl, idx) => {
               const isSolved = completedLevels.includes(lvl.id);
               const isCurrent = idx === currentLevelIdx;
@@ -495,13 +502,13 @@ export function App() {
                   key={lvl.id}
                   type="button"
                   onClick={() => resetLevel(idx)}
-                  className={`group text-left bg-white rounded-2xl border p-3 transition-all cursor-pointer hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C] ${
+                  className={`group text-left bg-white rounded-2xl border p-2.5 sm:p-3 transition-all cursor-pointer hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C] ${
                     isCurrent
                       ? 'border-[#EA580C] shadow-sm'
                       : 'border-[#E5DEC9] hover:border-[#C8AA7A]'
                   }`}
                 >
-                  <div className="aspect-square w-full rounded-xl overflow-hidden bg-[#FAF8F2] mb-3 relative">
+                  <div className="aspect-square w-full rounded-xl overflow-hidden bg-[#FAF8F2] mb-2 relative">
                     <img
                       src={lvl.imageUrl}
                       alt={lvl.animalName}
@@ -509,8 +516,8 @@ export function App() {
                       className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
                     />
                   </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-display text-base font-bold text-[#2D2A26] truncate">
+                  <div className="flex items-center justify-between gap-1.5">
+                    <span className="font-display text-sm sm:text-base font-bold text-[#2D2A26] truncate">
                       {lvl.shortTitle}: {lvl.title}
                     </span>
                     {isSolved && (
@@ -529,21 +536,21 @@ export function App() {
           </div>
         </main>
       ) : (
-        /* Main Play Workspace */
-        <main className="flex-1 w-full max-w-[1180px] mx-auto px-4 sm:px-6 py-5 sm:py-6 flex flex-col gap-5">
-          {/* Quick Level Switcher Strip (Màn 1 -> Màn 10) */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        /* Full-Screen Portrait iPhone (9:19.5) + Desktop Play Workspace */
+        <main className="flex-1 min-h-0 w-full max-w-[1180px] mx-auto px-safe pb-safe py-2 sm:py-5 flex flex-col gap-2 sm:gap-4 overflow-hidden lg:overflow-y-auto">
+          {/* Desktop Level Quick-Jump Strip (hidden on narrow portrait mobile to preserve 100dvh canvas) */}
+          <div className="hidden sm:flex items-center gap-2 overflow-x-auto pb-1 shrink-0 touch-pan-x-scroll">
             <button
               type="button"
               onClick={() => hasPrevLevel && resetLevel(currentLevelIdx - 1)}
               disabled={!hasPrevLevel}
               aria-label="Màn trước"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-white border border-[#E5DEC9] text-[#4A443B] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#FAF7F0] shrink-0 cursor-pointer"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-[#E5DEC9] text-[#4A443B] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#FAF7F0] shrink-0 cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-1 p-1 bg-[#EDE6D6] rounded-xl overflow-x-auto">
+            <div className="flex items-center gap-1 p-1 bg-[#EDE6D6] rounded-xl overflow-x-auto touch-pan-x-scroll">
               {PUZZLE_LEVELS.map((lvl, idx) => {
                 const isActive = idx === currentLevelIdx;
                 const isSolved = completedLevels.includes(lvl.id);
@@ -553,7 +560,7 @@ export function App() {
                     type="button"
                     onClick={() => resetLevel(idx)}
                     title={`${lvl.shortTitle}: ${lvl.title} (${lvl.pieceCount} mảnh)`}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C] ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C] ${
                       isActive
                         ? 'bg-white text-[#2D2A26] shadow-sm'
                         : 'text-[#665F55] hover:text-[#2D2A26]'
@@ -576,36 +583,64 @@ export function App() {
               onClick={() => hasNextLevel && resetLevel(currentLevelIdx + 1)}
               disabled={!hasNextLevel}
               aria-label="Màn tiếp theo"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-white border border-[#E5DEC9] text-[#4A443B] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#FAF7F0] shrink-0 cursor-pointer"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-[#E5DEC9] text-[#4A443B] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#FAF7F0] shrink-0 cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Level Title & Workspace Controls */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
-              <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#2D2A26] tracking-tight text-balance">
-                {currentLevel.shortTitle}: {currentLevel.title}
-              </h1>
-              <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-[#665F55] tabular-nums">
-                <span>{currentLevel.pieceCount} mảnh ghép</span>
-                <span aria-hidden="true">·</span>
-                <span>
-                  Đã ghép {placedIds.length}/{currentLevel.pieceCount}
-                </span>
-                <span aria-hidden="true">·</span>
-                <span>{currentLevel.instruction}</span>
+          {/* Level Title & Compact Controls Row */}
+          <div className="flex items-center justify-between gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 min-w-0">
+              {/* Mobile Prev/Next arrows inline with title */}
+              <button
+                type="button"
+                onClick={() => hasPrevLevel && resetLevel(currentLevelIdx - 1)}
+                disabled={!hasPrevLevel}
+                aria-label="Màn trước"
+                className="sm:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-[#E5DEC9] text-[#4A443B] disabled:opacity-35 shrink-0 cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <div className="min-w-0">
+                <h1 className="font-display text-base sm:text-2xl lg:text-3xl font-bold text-[#2D2A26] tracking-tight truncate">
+                  {currentLevel.shortTitle}: {currentLevel.title}
+                </h1>
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#665F55] tabular-nums truncate">
+                  <span>{currentLevel.pieceCount} mảnh</span>
+                  <span aria-hidden="true">·</span>
+                  <span>
+                    Đã ghép {placedIds.length}/{currentLevel.pieceCount}
+                  </span>
+                  <span className="hidden md:inline" aria-hidden="true">
+                    ·
+                  </span>
+                  <span className="hidden md:inline truncate">
+                    {currentLevel.instruction}
+                  </span>
+                </div>
               </div>
+
+              <button
+                type="button"
+                onClick={() => hasNextLevel && resetLevel(currentLevelIdx + 1)}
+                disabled={!hasNextLevel}
+                aria-label="Màn tiếp theo"
+                className="sm:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-[#E5DEC9] text-[#4A443B] disabled:opacity-35 shrink-0 cursor-pointer"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
 
-            {/* Utility Controls */}
-            <div className="flex items-center gap-2.5 shrink-0">
+            {/* Utility Controls (44px+ touch targets) */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setShowHint((prev) => !prev)}
                 aria-pressed={showHint}
-                className={`inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-sm font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C] ${
+                aria-label={showHint ? 'Ẩn gợi ý' : 'Xem mẫu rõ hơn'}
+                className={`inline-flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-2.5 sm:px-3.5 py-2 rounded-xl border text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C] ${
                   showHint
                     ? 'bg-[#FEF3C7] border-[#F59E0B] text-[#92400E]'
                     : 'bg-white border-[#DDD5C1] text-[#4A443B] hover:bg-[#FAF7F0]'
@@ -616,35 +651,40 @@ export function App() {
                 ) : (
                   <Eye className="w-4 h-4" />
                 )}
-                <span>{showHint ? 'Ẩn gợi ý' : 'Xem mẫu rõ hơn'}</span>
+                <span className="hidden sm:inline">
+                  {showHint ? 'Ẩn gợi ý' : 'Xem mẫu rõ hơn'}
+                </span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setSoundEnabled((prev) => !prev)}
                 aria-pressed={soundEnabled}
-                className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white border border-[#DDD5C1] text-[#4A443B] hover:bg-[#FAF7F0] text-sm font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
+                aria-label={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}
+                className="inline-flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-2.5 sm:px-3.5 py-2 rounded-xl bg-white border border-[#DDD5C1] text-[#4A443B] hover:bg-[#FAF7F0] text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
               >
                 {soundEnabled ? (
                   <Volume2 className="w-4 h-4 text-[#15803D]" />
                 ) : (
                   <VolumeX className="w-4 h-4 text-[#8C8376]" />
                 )}
-                <span>{soundEnabled ? 'Âm thanh: Bật' : 'Âm thanh: Tắt'}</span>
+                <span className="hidden sm:inline">
+                  {soundEnabled ? 'Âm thanh: Bật' : 'Âm thanh: Tắt'}
+                </span>
               </button>
             </div>
           </div>
 
-          {/* 2-Column Play Area: Wooden Board (Left) + Piece Tray / Victory Card (Right) */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6 items-stretch">
-            {/* Left: Wooden Puzzle Frame */}
+          {/* 2-Region Play Arena: Top/Left Board + Bottom/Right Tray */}
+          <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] gap-2.5 sm:gap-6 items-stretch">
+            {/* Wooden Puzzle Frame */}
             <section
               aria-label="Bảng ghép hình"
-              className="bg-[#E8D5B5] border-2 border-[#C8AA7A] rounded-3xl p-4 sm:p-6 shadow-md flex flex-col items-center justify-center"
+              className="bg-[#E8D5B5] border-2 border-[#C8AA7A] rounded-2xl sm:rounded-3xl p-2.5 sm:p-5 shadow-md flex flex-col items-center justify-center shrink-0 lg:shrink"
             >
               <div
                 ref={boardRef}
-                className="relative w-full max-w-[460px] aspect-square rounded-2xl overflow-hidden bg-[#FDFBF5] shadow-inner border-2 border-[#C8AA7A]/70 select-none"
+                className="relative w-[min(80vw,38dvh)] sm:w-[min(65vw,44dvh)] lg:w-full lg:max-w-[460px] aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-[#FDFBF5] shadow-inner border-2 border-[#C8AA7A]/70 select-none"
               >
                 {!imageFailed ? (
                   <img
@@ -657,8 +697,8 @@ export function App() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FEF3C7] text-[#92400E] p-4 text-center">
-                    <Puzzle className="w-12 h-12 mb-2 opacity-70" />
-                    <span className="font-display font-bold text-lg">
+                    <Puzzle className="w-10 h-10 mb-2 opacity-70" />
+                    <span className="font-display font-bold text-base sm:text-lg">
                       {currentLevel.animalName}
                     </span>
                   </div>
@@ -780,8 +820,8 @@ export function App() {
                 </svg>
               </div>
 
-              <div className="w-full max-w-[460px] mt-4">
-                <div className="h-3 w-full bg-[#D7C19C] rounded-full overflow-hidden">
+              <div className="w-[min(80vw,38dvh)] sm:w-[min(65vw,44dvh)] lg:w-full lg:max-w-[460px] mt-2 sm:mt-4">
+                <div className="h-2 sm:h-3 w-full bg-[#D7C19C] rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#16A34A] transition-all duration-300 rounded-full"
                     style={{
@@ -792,42 +832,43 @@ export function App() {
               </div>
             </section>
 
-            {/* Right: Piece Tray OR Level Complete Celebration */}
+            {/* Bottom/Right: Piece Tray OR Level Complete Celebration */}
             <section
               aria-label={isComplete ? 'Chúc mừng hoàn thành' : 'Khay mảnh ghép'}
-              className="bg-white border border-[#E5DEC9] rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col justify-between gap-5"
+              className="flex-1 min-h-0 bg-white border border-[#E5DEC9] rounded-2xl sm:rounded-3xl p-3 sm:p-6 shadow-sm flex flex-col justify-between gap-2 sm:gap-5 overflow-hidden"
             >
               {!isComplete ? (
                 <>
-                  <div>
-                    <div className="flex items-center justify-between gap-3">
-                      <h2 className="font-display text-xl font-bold text-[#2D2A26]">
+                  <div className="shrink-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <h2 className="font-display text-sm sm:text-xl font-bold text-[#2D2A26]">
                         Mảnh ghép của bé
                       </h2>
-                      <span className="text-sm font-medium text-[#665F55] tabular-nums">
+                      <span className="text-xs sm:text-sm font-medium text-[#665F55] tabular-nums">
                         Còn {unplacedPieces.length} mảnh
                       </span>
                     </div>
                     <p
-                      className={`mt-1.5 text-sm leading-relaxed ${
+                      className={`mt-0.5 sm:mt-1.5 text-xs sm:text-sm leading-snug sm:leading-relaxed line-clamp-2 ${
                         feedbackText
-                          ? 'text-[#B45309] font-medium'
+                          ? 'text-[#B45309] font-semibold'
                           : 'text-[#5C554C]'
                       }`}
                     >
                       {feedbackText
                         ? feedbackText
                         : selectedPieceId
-                          ? 'Bé đã chọn 1 mảnh! Hãy chạm vào ô nét đứt trên bảng gỗ để ghép vào nhé.'
-                          : 'Kéo thả từng mảnh sang bảng gỗ bên trái, hoặc chạm chọn mảnh rồi chạm vào ô trên bảng.'}
+                          ? 'Bé chạm vào ô nét đứt trên bảng để ghép mảnh vừa chọn!'
+                          : 'Kéo mảnh lên bảng hoặc chạm chọn mảnh rồi chạm vào ô trống.'}
                     </p>
                   </div>
 
+                  {/* Responsive Touch-Friendly Pieces Grid */}
                   <div
-                    className={`flex-1 grid gap-4 place-items-center py-2 ${
+                    className={`flex-1 min-h-0 grid gap-2 sm:gap-4 place-items-center ${mobileTrayCols} ${
                       currentLevel.pieceCount <= 4
-                        ? 'grid-cols-2'
-                        : 'grid-cols-2 sm:grid-cols-3'
+                        ? 'lg:grid-cols-2'
+                        : 'lg:grid-cols-3'
                     }`}
                   >
                     {unplacedPieces.map((piece, idx) => {
@@ -842,26 +883,18 @@ export function App() {
                           type="button"
                           onPointerDown={(e) => handlePiecePointerDown(e, piece)}
                           aria-label={`Mảnh ghép số ${idx + 1} của ${currentLevel.animalName}`}
-                          className={`touch-none-drag group relative flex items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-grab active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C] ${
+                          className={`touch-none-drag group relative w-full h-full min-h-[72px] sm:min-h-[130px] flex items-center justify-center p-1.5 sm:p-3 rounded-xl sm:rounded-2xl border-2 transition-all cursor-grab active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C] ${
                             isDraggingThis
                               ? 'opacity-25 border-dashed border-[#C8AA7A] bg-[#FAF7F0]'
                               : isSelected
-                                ? 'border-[#EA580C] bg-[#FFF7ED] shadow-md scale-[1.03]'
+                                ? 'border-[#EA580C] bg-[#FFF7ED] shadow-md scale-[1.02]'
                                 : 'border-[#ECE5D5] bg-[#FAF8F2] hover:border-[#D9A76A] hover:bg-white hover:shadow-md'
                           }`}
-                          style={{
-                            width: '100%',
-                            minHeight:
-                              currentLevel.pieceCount === 2 ? '210px' : '136px',
-                          }}
                         >
                           <div
-                            className="w-full flex items-center justify-center transition-transform duration-150 group-hover:scale-[1.03]"
+                            className="h-full max-h-[116px] sm:max-h-[168px] lg:max-h-[180px] flex items-center justify-center transition-transform duration-150 group-hover:scale-[1.03]"
                             style={{
-                              maxWidth:
-                                currentLevel.pieceCount === 2 ? '168px' : '132px',
-                              maxHeight:
-                                currentLevel.pieceCount === 2 ? '220px' : '136px',
+                              maxWidth: '92%',
                               aspectRatio: `${aspectRatio}`,
                             }}
                           >
@@ -869,7 +902,7 @@ export function App() {
                               piece={piece}
                               imageUrl={currentLevel.imageUrl}
                               imageFailed={imageFailed}
-                              className="w-full h-full drop-shadow-[0_6px_10px_rgba(45,42,38,0.18)]"
+                              className="w-full h-full drop-shadow-[0_4px_8px_rgba(45,42,38,0.18)]"
                             />
                           </div>
                         </button>
@@ -877,8 +910,9 @@ export function App() {
                     })}
                   </div>
 
-                  <div className="pt-4 border-t border-[#F0EAE0] flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-xl overflow-hidden border border-[#E5DEC9] shrink-0 bg-[#FAF8F2]">
+                  {/* Reference Card (shown on tablet/desktop where space is abundant) */}
+                  <div className="hidden sm:flex pt-3 border-t border-[#F0EAE0] items-center gap-4 shrink-0">
+                    <div className="w-14 h-14 rounded-xl overflow-hidden border border-[#E5DEC9] shrink-0 bg-[#FAF8F2]">
                       {!imageFailed ? (
                         <img
                           src={currentLevel.imageUrl}
@@ -903,29 +937,29 @@ export function App() {
                   </div>
                 </>
               ) : (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-6 px-2 animate-pop-in">
-                  <div className="w-16 h-16 rounded-2xl bg-[#DCFCE7] text-[#15803D] flex items-center justify-center mb-4 shadow-sm">
-                    <Sparkles className="w-9 h-9" />
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-2 sm:py-6 px-2 animate-pop-in">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-[#DCFCE7] text-[#15803D] flex items-center justify-center mb-2 sm:mb-4 shadow-sm">
+                    <Sparkles className="w-7 h-7 sm:w-9 sm:h-9" />
                   </div>
 
-                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#2D2A26] text-balance">
+                  <h2 className="font-display text-xl sm:text-3xl font-extrabold text-[#2D2A26] text-balance">
                     Chúc mừng bé! Bé ghép xong rồi!
                   </h2>
 
-                  <p className="mt-2 text-base font-semibold text-[#15803D]">
+                  <p className="mt-1 sm:mt-2 text-sm sm:text-base font-semibold text-[#15803D]">
                     Bức tranh {currentLevel.animalName} thật đáng yêu!
                   </p>
 
-                  <p className="mt-3 text-sm text-[#5C554C] max-w-sm leading-relaxed">
+                  <p className="mt-1.5 sm:mt-3 text-xs sm:text-sm text-[#5C554C] max-w-sm leading-relaxed line-clamp-2 sm:line-clamp-none">
                     {currentLevel.funFact}
                   </p>
 
-                  <div className="mt-7 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                  <div className="mt-4 sm:mt-7 flex flex-row sm:flex-row items-center justify-center gap-2.5 sm:gap-3 w-full">
                     {hasNextLevel ? (
                       <button
                         type="button"
                         onClick={() => resetLevel(currentLevelIdx + 1)}
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#EA580C] hover:bg-[#C2410C] active:scale-[0.98] text-white font-display text-base font-bold shadow-md transition-all cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 min-h-[48px] px-4 sm:px-6 py-3 rounded-2xl bg-[#EA580C] hover:bg-[#C2410C] active:scale-[0.98] text-white font-display text-sm sm:text-base font-bold shadow-md transition-all cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
                       >
                         <span>Màn tiếp theo</span>
                         <ChevronRight className="w-5 h-5" />
@@ -934,9 +968,9 @@ export function App() {
                       <button
                         type="button"
                         onClick={() => resetLevel(0)}
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#EA580C] hover:bg-[#C2410C] active:scale-[0.98] text-white font-display text-base font-bold shadow-md transition-all cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 min-h-[48px] px-4 sm:px-6 py-3 rounded-2xl bg-[#EA580C] hover:bg-[#C2410C] active:scale-[0.98] text-white font-display text-sm sm:text-base font-bold shadow-md transition-all cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
                       >
-                        <span>Chơi lại từ Màn 1</span>
+                        <span>Chơi lại Màn 1</span>
                         <ChevronRight className="w-5 h-5" />
                       </button>
                     )}
@@ -944,10 +978,10 @@ export function App() {
                     <button
                       type="button"
                       onClick={() => resetLevel(currentLevelIdx)}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-[#F4EFE4] hover:bg-[#EAE2D0] text-[#2D2A26] font-display text-base font-semibold transition-colors cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
+                      className="inline-flex items-center justify-center gap-1.5 min-h-[48px] px-4 sm:px-5 py-3 rounded-2xl bg-[#F4EFE4] hover:bg-[#EAE2D0] text-[#2D2A26] font-display text-sm sm:text-base font-semibold transition-colors cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EA580C]"
                     >
                       <RotateCcw className="w-4 h-4" />
-                      <span>Ghép lại màn này</span>
+                      <span>Ghép lại</span>
                     </button>
                   </div>
                 </div>
