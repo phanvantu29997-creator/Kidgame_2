@@ -1,0 +1,9 @@
+{
+  "name": "Bé Ghép Tranh - Con Voi",
+  "description": "Trò chơi mảnh ghép tranh hoạt hình dành cho bé 3-5 tuổi với 10 màn chơi các con vật gần gũi và giọng đọc cô giáo mầm non tiếng Việt.",
+  "requestFramePermissions": [],
+  "prompt": "",
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

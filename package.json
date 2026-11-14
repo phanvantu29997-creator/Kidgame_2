@@ -1,0 +1,39 @@
+{
+  "name": "get-started-with-nano-banana",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "build": "vite build",
+    "start": "node server.ts",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "@monaco-editor/loader": "^1.5.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/express": "^5.0.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "canvas-confetti": "^1.9.4",
+    "express": "^5.3.0",
+    "lucide-react": "^1.73.0",
+    "markdown-it": "^14.1.0",
+    "monaco-editor": "^0.52.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "safevalues": "1.2.0",
+    "sortablejs": "1.15.2",
+    "tailwindcss": "^4.3.5",
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}
